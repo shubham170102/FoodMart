@@ -14,7 +14,7 @@ def delete_from_inventory(connect, product_id):
     cursor = connect.cursor()
     query = ("DELETE FROM grocery_store.inventory WHERE product_id=" + str(product_id))
     cursor.execute(query)
-    connection.commit()
+    connect.commit()
 
 
 def update_inventory(connect, product_id, updated_product):
@@ -71,12 +71,11 @@ if __name__ == '__main__':
     #     'quantity_id': '1',
     #     'price_per_quantity': '8.00'
     # }))
-    # print(delete_from_inventory(connection, 14))
+    # print(delete_from_inventory(connection, 17))
     updated_product_info = {
         'product_name': 'lemonade',
         'quantity_id': '4',
         'price_per_quantity': '3.00'
     }
-
-    product_id_to_update = 6
+    product_id_to_update = 15
     print(update_inventory(connection, product_id_to_update, updated_product_info))
