@@ -3,11 +3,13 @@ from flask_cors import CORS
 import json
 import inventory_dao
 import quantity_dao
+import order_dao
 from connection import sql_connection
 
 app = Flask(__name__)
 CORS(app)
 connection = sql_connection()
+
 
 @app.route('/getInventory', methods=['GET'])
 def get_inventory():
@@ -26,12 +28,14 @@ def delete_from_inventory():
     response.headers.add('Access-Control-Allow-Origin', '*')
     return response
 
+
 @app.route('/getQuantity', methods=['GET'])
 def get_quantity():
     result = quantity_dao.get_all_quantity(connection)
     response = jsonify(result)
     response.headers.add('Access-Control-Allow-Origin', '*')
     return response
+
 
 @app.route('/addToInventory', methods=['POST'])
 def add_product():
@@ -42,6 +46,18 @@ def add_product():
     })
     result.headers.add('Access-Control-Allow-Origin', '*')
     return result
+
+
+@app.route('/addOrder', methods=['POST'])
+def insert_order():
+    data = json.loads(request.form['data'])
+    order_id = order_dao.insert_order(connection, data)
+    result = jsonify({
+        'order_id': order_id
+    })
+    result.headers.add('Access-Control-Allow-Origin', '*')
+    return result
+
 
 @app.route('/updateInventory/<int:product_id>', methods=['PUT'])
 def update_inventory(product_id):

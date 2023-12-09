@@ -16,3 +16,4 @@ def sql_connection():
             # Handle the error or re-raise
             raise
     return __cnx
+
