@@ -22,23 +22,40 @@ def insert_order(connection, order):
     connection.commit()
     return order_id
 
+def get_all_orders(connection):
+    cursor = connection.cursor()
+    query = "SELECT * FROM grocery_store.orders"
+    cursor.execute(query)
+
+    response = []
+    for (order_id, customer_name, total_price, timestamp) in cursor:
+        response.append({
+            'order_id': order_id,
+            'customer_name': customer_name,
+            'total_price': total_price,
+            'timestamp': timestamp
+        })
+
+    return response
+
 
 if __name__ == '__main__':
     connection = sql_connection()
-    print(insert_order(connection, {
-        'customer_name': 'Shubham',
-        'total_price': '501',
-        'order_details': [
-            {
-                'product_id': 3,
-                'quantity': 2,
-                'total': 50
-            },
-            {
-                'product_id': 21,
-                'quantity': 6,
-                'total': 30
-            }
+    # print(insert_order(connection, {
+    #     'customer_name': 'Shubham',
+    #     'total_price': '501',
+    #     'order_details': [
+    #         {
+    #             'product_id': 3,
+    #             'quantity': 2,
+    #             'total': 50
+    #         },
+    #         {
+    #             'product_id': 21,
+    #             'quantity': 6,
+    #             'total': 30
+    #         }
 
-        ]
-    }))
+    #     ]
+    # }))
+    print(get_all_orders(connection))

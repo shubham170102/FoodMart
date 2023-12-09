@@ -69,6 +69,13 @@ def update_inventory(product_id):
         return jsonify({'status': 'error', 'message': 'Update failed'}), 400
 
 
+@app.route('/getAllOrders', methods=['GET'])
+def get_all_orders():
+    res = order_dao.get_all_orders(connection)
+    res = jsonify(res)
+    res.headers.add('Access-Control-Allow-Origin', '*')
+    return res
+
 if __name__ == '__main__':
     print("Starting Flask")
     app.run(port=5000)
