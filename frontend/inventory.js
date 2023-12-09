@@ -15,7 +15,8 @@ function loadInventory() {
                     '<td>' + product.name + '</td>' +
                     '<td>' + product.quantity_name + '</td>' +
                     '<td>' + product.price_per_quantity + '</td>' +
-                    '<td><button class="btn btn-xs btn-danger delete-product">Delete</button></td></tr>';
+                    '<td><button class="btn btn-xs btn-warning edit-product">Edit</button> <button class="btn btn-xs btn-danger delete-product">Delete</button></td>';
+;
             });
             $("table").find('tbody').empty().html(table);
         }
@@ -32,6 +33,58 @@ $(document).on("click", ".delete-product", function () {
         callApi("POST", 'http://127.0.0.1:5000/deleteFromInventory', data);
     }
 });
+
+$(document).on("click", ".edit-product", function () {
+    var tr = $(this).closest('tr');
+    var product = {
+        product_id: tr.data('id'),
+        name: tr.data('name'),
+        quantity_id: tr.data('unit'),
+        price_per_quantity: tr.data('price')
+    };
+
+    showEditModal(product);
+});
+
+function showEditModal(product) {
+    $.get('http://127.0.0.1:5000/getQuantity', function (quantities) {
+        var options = '';
+        $.each(quantities, function (index, quantity) {
+            options += '<option value="' + quantity.quantity_id + '">' + quantity.quantity_name + '</option>';
+        });
+        $("#editUnit").empty().html(options);
+        $("#editUnit").val(product.quantity_id);
+    });
+
+    $("#editName").val(product.name);
+    $("#editPrice").val(product.price_per_quantity);
+
+    $("#editModal").data('product-id', product.product_id);
+    $("#editModal").show();
+}
+
+
+$("#updateProduct").on("click", function () {
+    var productId = $("#editModal").data('product-id');
+    var requestPayload = {
+        product_name: $("#editName").val(),
+        quantity_id: $("#editUnit").val(),
+        price_per_quantity: $("#editPrice").val()
+    };
+
+    callApi("PUT", `http://127.0.0.1:5000/updateInventory/${productId}`, {
+        'data': JSON.stringify(requestPayload)
+    });
+
+    $("#editModal").removeData('product-id');
+    closeEditModal();
+});
+
+function closeEditModal() {
+    $("#editModal").hide();
+}
+
+
 
 function callApi(method, url, data) {
     $.ajax({
@@ -91,10 +144,13 @@ function closeModal() {
     $("#myModal").hide();
 }
 
-// When the user clicks anywhere outside of the modal, close it
+
 window.onclick = function (event) {
-    var modal = document.getElementById("myModal");
-    if (event.target === modal) {
+    var addModal = document.getElementById("myModal");
+    var editModal = document.getElementById("editModal");
+    if (event.target === addModal) {
         closeModal();
+    } else if (event.target === editModal) {
+        closeEditModal();
     }
 }

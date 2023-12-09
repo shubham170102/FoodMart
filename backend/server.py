@@ -43,15 +43,14 @@ def add_product():
     result.headers.add('Access-Control-Allow-Origin', '*')
     return result
 
-# @app.route('/addToInventory', methods=['POST'])
-# def add_product():
-#     request_data = request.form
-#     product_id = inventory_dao.insert_new_product(connection, request_data)
-#     result = jsonify({
-#         'product_id': product_id
-#     })
-#     result.headers.add('Access-Control-Allow-Origin', '*')
-#     return result
+@app.route('/updateInventory/<int:product_id>', methods=['PUT'])
+def update_inventory(product_id):
+    data = json.loads(request.form['data'])
+    updated = inventory_dao.update_inventory(connection, product_id, data)
+    if updated:
+        return jsonify({'status': 'success', 'product_id': product_id})
+    else:
+        return jsonify({'status': 'error', 'message': 'Update failed'}), 400
 
 
 if __name__ == '__main__':

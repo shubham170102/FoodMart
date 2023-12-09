@@ -47,6 +47,27 @@
             </form>
         </div>
     </div>
+    <!-- Edit Product Modal -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <form id="editProductForm">
+                <span class="close">&times;</span>
+                <h2>Edit Product</h2>
+                <label for="editName">Name</label>
+                <input type="text" id="editName" name="name" placeholder="Name">
+                <label for="editUnit">Unit</label>
+                <select id="editUnit" name="unit">
+                    <!-- Unit options will be populated here -->
+                </select>
+                <label for="editPrice">Price Per Unit</label>
+                <input type="text" id="editPrice" name="price" placeholder="Price Per Unit">
+                <div style="text-align: right; margin-top: 20px;">
+                    <button type="button" class="modal-button modal-button-close" onclick="closeEditModal()">Close</button>
+                    <button type="button" class="modal-button modal-button-save" id="updateProduct">Update</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="inventory.js"></script>
