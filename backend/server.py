@@ -4,6 +4,7 @@ import json
 import inventory_dao
 import quantity_dao
 import order_dao
+from datetime import datetime
 from connection import sql_connection
 
 app = Flask(__name__)
@@ -75,6 +76,18 @@ def get_all_orders():
     res = jsonify(res)
     res.headers.add('Access-Control-Allow-Origin', '*')
     return res
+
+@app.route('/salesReport', methods=['GET'])
+def sales_report():
+    total_sales = order_dao.get_total_sales_per_day(connection)
+    top_products = order_dao.get_top_selling_products(connection)
+    avg_order_value = order_dao.get_average_order_value(connection)
+    return jsonify({
+        'total_sales_per_day': total_sales,
+        'top_selling_products': top_products,
+        'average_order_value': avg_order_value
+    })
+
 
 if __name__ == '__main__':
     print("Starting Flask")
