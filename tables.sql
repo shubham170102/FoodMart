@@ -1,3 +1,5 @@
+-- Firstly, create DB called grocery_store
+
 -- Create inventory table
 CREATE TABLE `inventory` (
   `product_id` int NOT NULL AUTO_INCREMENT,

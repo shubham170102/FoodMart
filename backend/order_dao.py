@@ -40,40 +40,63 @@ def get_all_orders(connection):
 
 # Queries for building report
 
+# def get_total_sales_per_day(connection):
+#     cursor = connection.cursor()
+#     query = """
+#     SELECT DATE(timestamp) as date, SUM(total_price) as total_sales FROM grocery_store.orders GROUP BY DATE(timestamp);
+#     """
+#     cursor.execute(query)
+#     result = cursor.fetchall()
+#     cursor.close()
+#     return result
+
+# def get_top_selling_products(connection):
+#     cursor = connection.cursor()
+#     query = """
+#     SELECT p.name, COUNT(*) as total_orders
+#     FROM grocery_store.orderInfo od
+#     JOIN grocery_store.inventory p ON od.product_id = p.product_id
+#     GROUP BY p.product_id
+#     ORDER BY total_orders DESC
+#     LIMIT 10;
+#     """
+#     cursor.execute(query)
+#     result = cursor.fetchall()
+#     cursor.close()
+#     return result
+
+
+# def get_average_order_value(connection):
+#     cursor = connection.cursor()
+#     query = """
+#     SELECT AVG(total_price) as avg_order_value
+#     FROM grocery_store.orders;
+#     """
+#     cursor.execute(query)
+#     result = cursor.fetchone()
+#     cursor.close()
+#     return result
+
+# Using Stored procedure for sales report
+
 def get_total_sales_per_day(connection):
     cursor = connection.cursor()
-    query = """
-    SELECT DATE(timestamp) as date, SUM(total_price) as total_sales FROM grocery_store.orders GROUP BY DATE(timestamp);
-    """
-    cursor.execute(query)
-    result = cursor.fetchall()
+    cursor.callproc('GetTotalSalesPerDay')
+    results = [result.fetchall() for result in cursor.stored_results()][0]
     cursor.close()
-    return result
+    return results
 
 def get_top_selling_products(connection):
     cursor = connection.cursor()
-    query = """
-    SELECT p.name, COUNT(*) as total_orders
-    FROM grocery_store.orderInfo od
-    JOIN grocery_store.inventory p ON od.product_id = p.product_id
-    GROUP BY p.product_id
-    ORDER BY total_orders DESC
-    LIMIT 10;
-    """
-    cursor.execute(query)
-    result = cursor.fetchall()
+    cursor.callproc('GetTopSellingProducts')
+    results = [result.fetchall() for result in cursor.stored_results()][0]
     cursor.close()
-    return result
-
+    return results
 
 def get_average_order_value(connection):
     cursor = connection.cursor()
-    query = """
-    SELECT AVG(total_price) as avg_order_value
-    FROM grocery_store.orders;
-    """
-    cursor.execute(query)
-    result = cursor.fetchone()
+    cursor.callproc('GetAverageOrderValue')
+    result = [result.fetchone() for result in cursor.stored_results()][0]
     cursor.close()
     return result
 
